@@ -6,6 +6,8 @@ const stopBtn = document.querySelector("#stop");
 const resetBtn = document.querySelector("#reset");
 
 function updateTimeElements() {
+  // console.log("Logging popup");
+
   chrome.storage.local.get(["timer"], (res) => {
     const time = res?.timer ?? 0;
     timerElement.textContent = `Timer is at: ${time} seconds`;
