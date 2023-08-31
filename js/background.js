@@ -3,10 +3,13 @@ chrome.alarms.create({
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  console.log("Logging alarm", self);
-  chrome.storage.local.get(["timer"], (res) => {
+  chrome.storage.local.get(["timer", "isRunning"], (res) => {
     const time = res?.timer ?? 0;
-    console.log("Timer", time);
+    const isRunning = res?.isRunning ?? true;
+
+    if (!isRunning) {
+      return;
+    }
     chrome.storage.local.set({
       timer: time + 1,
     });
@@ -14,10 +17,16 @@ chrome.alarms.onAlarm.addListener((alarm) => {
       text: `${time + 1}`,
     });
 
-    self.registration.showNotification("Chrome Timer Extension", {
-      body: "1 second has passed!",
-      icon: "icon.png",
+    chrome.storage.sync.get(["notificationTime"], (result) => {
+      const notificationTime = result?.notificationTime ?? 1000;
+      if (time % notificationTime === 0) {
+        self.registration.showNotification("Chrome Timer Extension", {
+          body: `${notificationTime} second has passed!`,
+          icon: "../icon.png",
+        });
+      }
     });
+
     // chrome.notifications.create({
     //   type: "basic",
     //   iconUrl: "icon.png",

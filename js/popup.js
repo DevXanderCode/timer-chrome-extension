@@ -1,6 +1,9 @@
 const timeElement = document.querySelector("#time");
 const nameElement = document.querySelector("#name");
 const timerElement = document.querySelector("#timer");
+const startBtn = document.querySelector("#start");
+const stopBtn = document.querySelector("#stop");
+const resetBtn = document.querySelector("#reset");
 
 function updateTimeElements() {
   chrome.storage.local.get(["timer"], (res) => {
@@ -18,4 +21,23 @@ chrome.storage.sync.get(["name"], (result) => {
   const name = result?.name ?? "???";
 
   nameElement.textContent = `Your name is: ${name}`;
+});
+
+startBtn.addEventListener("click", () => {
+  chrome.storage.local.set({
+    isRunning: true,
+  });
+});
+
+stopBtn.addEventListener("click", () => {
+  chrome.storage.local.set({
+    isRunning: false,
+  });
+});
+
+resetBtn.addEventListener("click", () => {
+  chrome.storage.local.set({
+    timer: 0,
+    isRunning: false,
+  });
 });

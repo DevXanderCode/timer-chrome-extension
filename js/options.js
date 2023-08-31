@@ -1,16 +1,15 @@
 const nameInput = document.querySelector("#name-input");
+const timeInput = document.querySelector("#time-input");
 const saveBtn = document.querySelector("#save-btn");
 
 saveBtn.addEventListener("click", () => {
   const name = nameInput.value;
-  chrome.storage.sync.set({ name }, () => {
-    console.log(`Name is set to ${name}`);
-  });
+  const notificationTime = timeInput.value;
+  chrome.storage.sync.set({ name, notificationTime });
 });
 
-chrome.storage.sync.get(["name"], (result) => {
+chrome.storage.sync.get(["name", "notificationTime"], (result) => {
   console.log("name gotten is ", result);
-  if (result?.name) {
-    nameInput.value = result?.name;
-  }
+  nameInput.value = result?.name ?? "???";
+  timeInput.value = result?.notificationTime ?? 1000;
 });
